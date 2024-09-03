@@ -1,0 +1,80 @@
+-- Crear tabla de Métodos de Pago
+CREATE TABLE Metodos_Pago (
+    ID_Metodo INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre_Metodo VARCHAR(50) NOT NULL
+);
+
+-- Insertar métodos de pago
+INSERT INTO Metodos_Pago (Nombre_Metodo) VALUES
+('Efectivo'),
+('Mercado Pago'),
+('Tarjeta de Crédito'),
+('Uala'),
+('Bitcoins');
+
+-- Crear tabla de Clientes
+CREATE TABLE Clientes (
+    ID_Cliente INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Dirección VARCHAR(255),
+    Teléfono VARCHAR(20),
+    Email VARCHAR(100),
+    ID_Metodo INT,
+    FOREIGN KEY (ID_Metodo) REFERENCES Metodos_Pago(ID_Metodo)
+);
+
+-- Crear tabla de Proveedores
+CREATE TABLE Proveedores (
+    ID_Proveedor INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre_Proveedor VARCHAR(100) NOT NULL,
+    Contacto VARCHAR(100),
+    Teléfono VARCHAR(20)
+);
+
+-- Crear tabla de Productos
+CREATE TABLE Productos (
+    ID_Producto INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre_Producto VARCHAR(100) NOT NULL,
+    Descripción TEXT,
+    Precio DECIMAL(10, 2) NOT NULL,
+    Tipo VARCHAR(50)
+);
+
+-- Crear tabla de Pedidos
+CREATE TABLE Pedidos (
+    IDPedido INT AUTO_INCREMENT PRIMARY KEY,
+    Fecha DATE NOT NULL,
+    ID_Cliente INT,
+    Total DECIMAL(10, 2) NOT NULL,
+    ID_Metodo INT,
+    FOREIGN KEY (ID_Cliente) REFERENCES Clientes(ID_Cliente),
+    FOREIGN KEY (ID_Metodo) REFERENCES Metodos_Pago(ID_Metodo)
+);
+
+-- Crear tabla de Entregas
+CREATE TABLE Entregas (
+    ID_Entrega INT AUTO_INCREMENT PRIMARY KEY,
+    ID_Pedido INT,
+    Fecha_Entrega DATE NOT NULL,
+    Estado VARCHAR(50),
+    FOREIGN KEY (ID_Pedido) REFERENCES Pedidos(IDPedido)
+);
+
+-- Crear tabla de Pedidos_Productos (relación entre Pedidos y Productos)
+CREATE TABLE Pedidos_Productos (
+    ID_Pedido INT,
+    ID_Producto INT,
+    Cantidad INT NOT NULL,
+    PRIMARY KEY (ID_Pedido, ID_Producto),
+    FOREIGN KEY (ID_Pedido) REFERENCES Pedidos(IDPedido),
+    FOREIGN KEY (ID_Producto) REFERENCES Productos(ID_Producto)
+);
+
+-- Crear tabla de Producto_Proveedor (relación entre Productos y Proveedores)
+CREATE TABLE Producto_Proveedor (
+    ID_Producto INT,
+    ID_Proveedor INT,
+    PRIMARY KEY (ID_Producto, ID_Proveedor),
+    FOREIGN KEY (ID_Producto) REFERENCES Productos(ID_Producto),
+    FOREIGN KEY (ID_Proveedor) REFERENCES Proveedores(ID_Proveedor)
+);
